@@ -1,0 +1,30 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  tests:
+      name: Run Unit Tests
+      runs-on: ubuntu-latest
+      steps:
+        # 1. Clonar el repositorio
+        - uses: actions/checkout@v4
+  
+        # 2. Instalar dependencias necesarias
+        - name: Install dependencies
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y cmake build-essential
+  
+        # 3. Configurar, compilar y ejecutar las pruebas
+        - name: Configure, Build, and Test
+          run: |
+            mkdir build
+            cd build
+            cmake ..
+            cmake --build .
+            ctest --output-on-failure
