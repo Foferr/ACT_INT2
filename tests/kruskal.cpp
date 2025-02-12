@@ -20,7 +20,7 @@ TEST_F(KruskalTest, GrafoPequeno) {
     g->AddEdge(2, 3, 3);
     g->AddEdge(3, 4, 4);
     
-    EXPECT_EQ(g->KruskalMST(), 10);
+    EXPECT_EQ(g->KruskalMST(), 10);  
 }
 
 TEST_F(KruskalTest, GrafoConectadoConCiclo) {
@@ -28,9 +28,9 @@ TEST_F(KruskalTest, GrafoConectadoConCiclo) {
     g->AddEdge(1, 2, 3);
     g->AddEdge(2, 3, 4);
     g->AddEdge(3, 4, 5);
-    g->AddEdge(4, 0, 1);  // Crea un ciclo
+    g->AddEdge(4, 0, 1);  
 
-    EXPECT_EQ(g->KruskalMST(), 10);
+    EXPECT_EQ(g->KruskalMST(), 10);  
 }
 
 TEST_F(KruskalTest, GrafoDesconectado) {
@@ -38,7 +38,7 @@ TEST_F(KruskalTest, GrafoDesconectado) {
     g->AddEdge(1, 2, 10);
     
     // Un nodo 3 y 4 sin conexión
-    EXPECT_ANY_THROW(g->KruskalMST());  // Debería fallar o manejar el error
+    EXPECT_ANY_THROW(g->KruskalMST());  
 }
 
 TEST_F(KruskalTest, GrafoDenso) {
@@ -50,5 +50,5 @@ TEST_F(KruskalTest, GrafoDenso) {
     g->AddEdge(1, 3, 3);
     g->AddEdge(2, 4, 4);
 
-    EXPECT_EQ(g->KruskalMST(), 10);
+    EXPECT_EQ(g->KruskalMST(), 10);  
 }
