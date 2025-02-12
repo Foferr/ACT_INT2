@@ -16,7 +16,7 @@ set(SOURCES
         src/main.cpp
         src/MaxFlowSolver.h
         src/Kruskal.h
-        src/lineal_search.h
+        src/linear_search.h
         src/traveling_salesman.h
 )
 
@@ -57,7 +57,7 @@ if(ENABLE_TESTING)
     # Añadir los ejecutables de prueba
     add_test_executable(test_MaxFlowSolver tests/MaxFlowSolver.cpp)
     add_test_executable(test_kruskal tests/kruskal.cpp)
-    add_test_executable(test_lineal_search tests/test_lineal_search.cpp)
+    add_test_executable(test_linear_search tests/test_linear_search.cpp)
     add_test_executable(test_tsp tests/tsp.cpp)
 
     # Generate coverage reports
