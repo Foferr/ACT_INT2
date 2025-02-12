@@ -11,7 +11,7 @@ if (ENABLE_COVERAGE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 endif()
 
-# Source files
+# Source files , prueba para sonarqube
 set(SOURCES
         src/main.cpp
         src/MaxFlowSolver.h
