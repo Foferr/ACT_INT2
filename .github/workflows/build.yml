@@ -1,55 +1,61 @@
-name: SonarQube
+name: Build and Test
+
 on:
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
-  build:
-    name: Build and analyze
-    runs-on: windows-latest
-    env:
-      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory  # Directorio de salida para build-wrapper
+  tests:
+    name: Run Unit Tests with Coverage
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential lcov gcovr
+
+      - name: Configure and Build with Coverage
+        run: |
+          mkdir build
+          cd build
+          cmake -DENABLE_COVERAGE=ON ..
+          cmake --build .
+
+      - name: Run Tests and Generate Coverage Report
+        run: |
+          cd build
+          ctest --output-on-failure
+          # Generate LCOV coverage.info
+          lcov --capture --directory . --output-file coverage.info --ignore-errors mismatch
+          # Convert LCOV to SonarQube-compatible XML format, excluding main.cpp
+          gcovr --root .. --exclude 'tests/*' --exclude 'build/*' --exclude 'main.cpp' --sonarqube -o coverage.xml --print-summary
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
         with:
-          fetch-depth: 0  # Desactivar clones superficiales para una mayor relevancia en el análisis
+          name: coverage-report
+          path: build/coverage.xml
 
-      # Instalar Visual Studio y herramientas de compilación de MSBuild
-      - name: Install Visual Studio and MSBuild tools
-        run: |
-          choco install visualstudio2019community --package-parameters "--includeRecommended --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+  build_analysis:
+    name: Build and Analyze with SonarQube
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Instalar Build Wrapper (herramienta necesaria para analizar proyectos C++)
-      - name: Install Build Wrapper
-        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v4
+      - name: Download Coverage Report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: build/
 
-      # Generar archivos de construcción con CMake
-      - name: Generate build files with CMake
-        run: |
-          cmake -S . -B build -G "Visual Studio 16 2019" -DCMAKE_EXPORT_COMPILE_COMMANDS=YES  # Asegúrate de exportar compile_commands.json
-          cmake --build build --config Release
-
-      # Ejecutar Build Wrapper
-      - name: Run Build Wrapper
-        run: |
-          build-wrapper-win-x86-64.exe --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build --config Release
-
-      # Verificar el contenido de compile_commands.json para asegurarse de que no esté vacío
-      - name: Check compile_commands.json
-        run: |
-          cat ${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json
-
-      # Ejecutar análisis de SonarQube
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v4
+      - name: Run SonarQube Analysis
+        uses: sonarsource/sonarqube-scan-action@v3
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args: >
-            --define sonar.cfamily.compile-commands="${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json"
-            --define sonar.organization=foffer  # Asegúrate de agregar tu clave de organización en SonarQube
