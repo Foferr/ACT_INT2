@@ -37,7 +37,6 @@ TEST_F(KruskalTest, GrafoDesconectado) {
     g->AddEdge(0, 1, 5);
     g->AddEdge(1, 2, 10);
     
-    // Los nodos 3 y 4 no están conectados, causando que el grafo sea desconectado
     try {
         g->KruskalMST();  
         FAIL() << "Se esperaba una excepción debido a un grafo desconectado.";

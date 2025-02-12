@@ -91,7 +91,7 @@ void kruskal_algorithm(int V, const vector<vector<int>>& distances) {
  */
 void tsp_algorithm(int V, const vector<vector<int>>& distances) {
     cout << "Parte 2: Traveling Salesman Problem" << endl;
-    auto tsp_answer = TravelingSalesman::Solve(V, distances);  // Cambiar de TSP::Solve a TravelingSalesman::Solve
+    auto tsp_answer = TravelingSalesman::Solve(V, distances);  
     cout << format_tsp_output(tsp_answer) << endl;
 }
 
@@ -127,7 +127,7 @@ int main() {
     int V;
     cin >> V;
 
-    vector<pair<int, int>> centrals; // Asegúrate de declarar el vector de centrals aquí
+    vector<pair<int, int>> centrals; 
 
     // Leer distancias, capacidades, y datos de centrales y nuevo contrato
     auto distances = read_distances(V);

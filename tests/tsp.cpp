@@ -42,7 +42,7 @@ TEST(TSPTest, LargeGraphTest) {
     };
     
     vector<int> ruta_obtenida = TravelingSalesman::Solve(5, distances);
-    vector<int> ruta_esperada = {0, 4, 1, 3, 2};  // Esperado puede ser cualquier ruta óptima, validamos tamaño
+    vector<int> ruta_esperada = {0, 4, 1, 3, 2};  
 
     ASSERT_EQ(ruta_obtenida.size(), ruta_esperada.size());
 }

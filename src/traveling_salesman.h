@@ -28,7 +28,6 @@ public:
     }
 
 private:
-    // Asegúrate de que dfs reciba distances como referencia constante
     static void dfs(int node, int n, const vector<vector<int>>& distances, vector<bool>& visited, 
                     int current_cost, int& min_cost, vector<int>& best_route, vector<int>& current_route) {
         // Si se ha visitado todos los nodos

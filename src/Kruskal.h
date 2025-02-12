@@ -5,7 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
-#include <stdexcept> // Para lanzar excepciones
+#include <stdexcept> 
 
 using namespace std;
 
@@ -23,7 +23,7 @@ public:
 
     int Find(int i) {
         while (i != parent[i]) {
-            parent[i] = parent[parent[i]]; // Path compression
+            parent[i] = parent[parent[i]]; 
             i = parent[i];
         }
         return i;
