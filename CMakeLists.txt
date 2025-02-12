@@ -37,7 +37,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# Add unit tests
+# Add unit tests sa
 if(ENABLE_TESTING)
     enable_testing()
 
