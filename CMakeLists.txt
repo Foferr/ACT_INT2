@@ -28,7 +28,7 @@ option(ENABLE_TESTING "Enable a Unit Testing build." ON)
 set(CMAKE_CXX_STANDARD 17)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-# Download and use GoogleTest
+# Download and use GoogleTest porque no hay cambio?
 include(FetchContent)
 FetchContent_Declare(
     googletest
