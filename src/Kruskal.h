@@ -1,4 +1,4 @@
-#ifndef KRUSKAL_H
+#ifndef KRUSKAL_H //UPDATE KRUSKAL
 #define KRUSKAL_H
 
 #include <iostream>
@@ -90,4 +90,4 @@ public:
     }
 };
 
-#endif // KRUSKAL_H
+#endif //KRUSKAL_H
