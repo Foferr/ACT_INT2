@@ -95,6 +95,7 @@ public:
 
 /**
  * @brief Función principal.
+ *solo para prueba
  */
 int main() {
     Graph g(6);
