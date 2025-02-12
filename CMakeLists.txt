@@ -13,22 +13,24 @@ endif()
 
 # Source files
 set(SOURCES
-        main.cpp
-        MaxFlowSolver.h
-        Kruskal.h
-        lineal_search.h
-        traveling_salesman.h
+        src/main.cpp
+        src/MaxFlowSolver.h
+        src/Kruskal.h
+        src/lineal_search.h
+        src/traveling_salesman.h
 )
 
-add_executable(unit_test main.cpp)
+# Definir el ejecutable principal
+add_executable(unit_test ${SOURCES})
 
 # Enable testing
 option(ENABLE_TESTING "Enable a Unit Testing build." ON)
 
-set(CMAKE_CXX_STANDARD 17)
+# Especifica las rutas para las pruebas
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/tests)
 
-# Download and use GoogleTest porque no hay cambio?
+# Download and use GoogleTest
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -37,7 +39,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# Add unit tests sa
+# Add unit tests
 if(ENABLE_TESTING)
     enable_testing()
 
@@ -52,6 +54,7 @@ if(ENABLE_TESTING)
         add_test(NAME ${name} COMMAND ${name})
     endfunction()
 
+    # Añadir los ejecutables de prueba
     add_test_executable(test_MaxFlowSolver tests/MaxFlowSolver.cpp)
     add_test_executable(test_kruskal tests/kruskal.cpp)
     add_test_executable(test_lineal_search tests/test_lineal_search.cpp)
