@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+#include <stdexcept> // Para lanzar excepciones
 
 using namespace std;
 
@@ -22,7 +23,7 @@ public:
 
     int Find(int i) {
         while (i != parent[i]) {
-            parent[i] = parent[parent[i]];
+            parent[i] = parent[parent[i]]; // Path compression
             i = parent[i];
         }
         return i;
@@ -45,34 +46,47 @@ public:
 };
 
 class Graph {
-    vector<tuple<int, int, int>> edges; // vector para almacenar aristas (peso, nodo1, nodo2)
+    vector<tuple<int, int, int>> edges;
     int vertices;
 
 public:
     Graph(int V) : vertices(V) {}
 
-    // Método para agregar una arista al grafo
-    void AddEdge(int x, int y, int weight) {
-        edges.push_back({weight, x, y});
+    // Agrega una arista al grafo
+    void AddEdge(int u, int v, int weight) {
+        edges.push_back({weight, u, v});
     }
 
-    // Algoritmo de Kruskal para obtener el árbol de expansión mínima (MST)
+    /**
+     * @brief Algoritmo de Kruskal para MST.
+     * @return El peso total del árbol de expansión mínima.
+     */
     int KruskalMST() {
+        // Ordena las aristas por peso
         sort(edges.begin(), edges.end());
+
         DSU dsu(vertices);
         int totalWeight = 0;
+        int edgesUsed = 0;
 
+        // Procesa las aristas en orden de peso
         cout << "MST:\n";
         for (auto& [weight, u, v] : edges) {
             if (dsu.Find(u) != dsu.Find(v)) {
                 dsu.Unite(u, v);
                 cout << u << " - " << v << " (" << weight << ")\n";
                 totalWeight += weight;
+                edgesUsed++;
             }
         }
-        cout << "Peso total: " << totalWeight << endl;
 
-        return totalWeight; // Devuelve el peso total para las pruebas
+        // Si no se usan suficientes aristas, el grafo está desconectado
+        if (edgesUsed < vertices - 1) {
+            throw std::runtime_error("Grafo desconectado");
+        }
+
+        cout << "Peso total: " << totalWeight << endl;
+        return totalWeight;
     }
 };
 
