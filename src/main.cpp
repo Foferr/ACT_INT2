@@ -111,6 +111,7 @@ void max_flow_algorithm(int V, const vector<vector<int>>& capacities) {
  * @brief Ejecuta la búsqueda lineal para encontrar el contrato más cercano.
  * @param centrals Lista de ubicaciones de las centrales.
  * @param new_contract Coordenada del nuevo contrato.
+ * Agrego Comentario para ejecutar con githubactions despues de agregar el sonar properties:)
  */
 void linear_search_algorithm(const vector<pair<int, int>>& centrals, const pair<int, int>& new_contract) {
     cout << "Parte 4: Busqueda Lineal" << endl;
