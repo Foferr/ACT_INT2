@@ -1,59 +1,37 @@
-cmake_minimum_required(VERSION 3.10)
-project(Evidencia2)
+# Add unit tests
+if(ENABLE_TESTING)
+    enable_testing()
 
-# Configuración de C++ estándar
-set(CMAKE_CXX_STANDARD 17)
+    function(add_test_executable name source)
+        add_executable(${name} ${source})
+        target_link_libraries(${name} PRIVATE gtest gtest_main)
+        if (ENABLE_COVERAGE)
+            target_link_libraries(${name} PRIVATE gcov)
+            target_compile_options(${name} PRIVATE --coverage -fprofile-arcs -ftest-coverage)
+            target_link_options(${name} PRIVATE --coverage)
+        endif()
+        add_test(NAME ${name} COMMAND ${name})
+    endfunction()
 
-# Configuración para SonarQube (si aplica)
-include_directories(${PROJECT_SOURCE_DIR}/src)
+    add_test_executable(test_MaxFlowSolver tests/MaxFlowSolver.cpp)
+    add_test_executable(test_kruskal tests/kruskal.cpp)
+    add_test_executable(test_lineal_search tests/test_lineal_search.cpp)
+    add_test_executable(test_tsp tests/tsp.cpp)
 
-# Google Test: Descarga y compila automáticamente si no está instalado
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
-)
-FetchContent_MakeAvailable(googletest)
-
-# Asegurarse de que las rutas de Google Test se incluyen correctamente
-include_directories(${googletest_SOURCE_DIR}/googletest/include)
-include_directories(${googletest_SOURCE_DIR}/googlemock/include)
-
-# Configuración del runtime para evitar el error LNK2038 (para MSVC)
-if(MSVC)
-  # Usar la biblioteca estática de tiempo de ejecución para todos los proyectos
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+    # Generate coverage reports
+    if (ENABLE_COVERAGE)
+        find_program(LCOV lcov)
+        if (LCOV)
+            add_custom_target(coverage
+                COMMAND lcov --capture --directory . --output-file build/coverage.info
+                COMMAND genhtml build/coverage.info --output-directory build/coverage_html
+                COMMENT "Generating code coverage report"
+                VERBATIM
+            )
+        else()
+            message(WARNING "LCOV not found, coverage reporting will not be available")
+        endif()
+    endif()
 endif()
-
-# Habilitar las pruebas
-enable_testing()
-
-# Definir archivos fuente comunes para el proyecto
-set(SRC_FILES 
-    src/main.cpp
-    src/Kruskal.h
-    src/MaxFlowSolver.h
-    src/linear_search.h
-    src/traveling_salesman.h
-)
-
-# Ejecutable principal
-add_executable(main ${SRC_FILES})
-
-# Definir archivos de prueba
-set(TEST_FILES 
-    tests/test_linear_search.cpp
-    tests/kruskal.cpp
-    tests/MaxFlowSolver.cpp
-    tests/tsp.cpp
-)
-
-# Ejecutable para las pruebas unitarias
-add_executable(tests ${TEST_FILES} ${SRC_FILES})  # Asegúrate de incluir los archivos fuente
-
-# Compilar Google Test (si no se compiló previamente)
-add_dependencies(tests gtest gtest_main)
-
-# Enlace correcto de las librerías de Google Test
-target_link_libraries(tests gtest gtest_main)
+# Si se necesita especificar explícitamente las librerías
+# target_link_libraries(tests ${googletest_BINARY_DIR}/lib/libgtest.a ${googletest_BINARY_DIR}/lib/libgtest_main.a)
