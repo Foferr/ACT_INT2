@@ -1,7 +1,9 @@
-#include <iostream>
-#include <vector>
+#ifndef KRUSKAL_H
+#define KRUSKAL_H
+
 #include <unordered_map>
-#include <algorithm>
+#include <vector>
+#include <tuple>
 
 using namespace std;
 
@@ -28,7 +30,7 @@ public:
      */
     int Find(int i) {
         while (i != parent[i]) {
-            parent[i] = parent[parent[i]];
+            parent[i] = parent[parent[i]];  // Compresión de ruta
             i = parent[i];
         }
         return i;
@@ -57,7 +59,7 @@ public:
  * @brief Clase para representar un grafo.
  */
 class Graph {
-    vector<tuple<int, int, int>> edges;
+    vector<tuple<int, int, int>> edges; // Almacena las aristas (peso, nodo1, nodo2)
     int vertices;
 
 public:
@@ -76,37 +78,7 @@ public:
     /**
      * @brief Algoritmo de Kruskal para MST.
      */
-    void KruskalMST() {
-        sort(edges.begin(), edges.end());
-        DSU dsu(vertices);
-        int totalWeight = 0;
-
-        cout << "MST:\n";
-        for (auto& [weight, u, v] : edges) {
-            if (dsu.Find(u) != dsu.Find(v)) {
-                dsu.Unite(u, v);
-                cout << u << " - " << v << " (" << weight << ")\n";
-                totalWeight += weight;
-            }
-        }
-        cout << "Peso total: " << totalWeight << endl;
-    }
+    void KruskalMST();
 };
 
-/**
- * @brief Función principal.
- *solo para prueba
- */
-int main() {
-    Graph g(6);
-    g.AddEdge(0, 1, 4);
-    g.AddEdge(0, 2, 4);
-    g.AddEdge(1, 2, 2);
-    g.AddEdge(1, 3, 6);
-    g.AddEdge(2, 3, 8);
-    g.AddEdge(3, 4, 9);
-    g.AddEdge(4, 5, 10);
-
-    g.KruskalMST();
-    return 0;
-}
+#endif // KRUSKAL_H
